@@ -28,6 +28,12 @@ async function run() {
 const userCollection = client.db('eMart').collection('user')
 
 
+// Users API
+
+
+
+
+
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
