@@ -43,6 +43,10 @@ app.post('/users',async(req,res)=>{
 
 })
 
+app.get('/users',(req,res)=>{
+  
+})
+
 
 
 
