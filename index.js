@@ -3,7 +3,7 @@ const cors =require('cors')
 const port =process.env.PORT || 5000;
 const app = express();
 require('dotenv').config()
-
+const jwt =require('jsonwebtoken')
 
 app.use(cors());
 app.use(express.json())
@@ -29,6 +29,14 @@ async function run() {
 const userCollection = client.db('eMart').collection('user')
 
 
+
+// jwt
+app.post('/jwt',async(req,res)=>{
+  const user= req.body;
+  console.log(user);
+  res.send(user)
+})
+
 // Users API
 
 app.post('/users',async(req,res)=>{
@@ -43,8 +51,9 @@ app.post('/users',async(req,res)=>{
 
 })
 
-app.get('/users',(req,res)=>{
-  
+app.get('/users',async(req,res)=>{
+  const result = await userCollection.find().toArray()
+  res.send(result)
 })
 
 
