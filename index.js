@@ -10,7 +10,7 @@ app.use(express.json())
 
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tp2ab.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tp2ab.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -37,8 +37,11 @@ app.post('/jwt',async(req,res)=>{
   res.send(user)
 })
 
-// Users API
 
+
+
+
+// Users API
 app.post('/users',async(req,res)=>{
   const user = req.body
   const query= {email:user.email}
@@ -50,11 +53,19 @@ app.post('/users',async(req,res)=>{
   res.send(result)
 
 })
-
+// Users Get
 app.get('/users',async(req,res)=>{
   const result = await userCollection.find().toArray()
   res.send(result)
 })
+// Users delete
+app.delete('/users/:id', async(req,res)=>{
+  const id = req.params.id;
+  const query= {_id : new ObjectId(id)}
+  const result = await userCollection.deleteOne(query)
+  res.send(result)
+})
+
 
 
 
