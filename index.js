@@ -28,10 +28,13 @@ async function run() {
 
 const userCollection = client.db('eMart').collection('user')
 
+// verify Token
+const verifyToken =async (req, res, next)=>{
 
+}
 
 // jwt
-app.post('jwt',async(req,res)=>{
+app.post('/jwt',async(req,res)=>{
   const user = req.body;
   const token= jwt.sign(user,process.env.ACCESS_TOKEN,{expiresIn: '1h'})
   res.send({token})
