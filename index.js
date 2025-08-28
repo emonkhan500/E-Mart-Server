@@ -8,8 +8,6 @@ const jwt =require('jsonwebtoken')
 app.use(cors());
 app.use(express.json())
 
-
-
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tp2ab.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.tp2ab.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -28,6 +26,13 @@ async function run() {
 
 const userCollection = client.db('eMart').collection('user')
 
+// jwt
+app.post('/jwt',async(req,res)=>{
+  const user = req.body;
+  const token= jwt.sign(user,process.env.ACCESS_TOKEN,{expiresIn: '1h'})
+  res.send({token})
+})
+
 // verify Token
 const verifyToken = (req, res, next)=>{
 if(!req.headers.authorization){
@@ -40,17 +45,12 @@ jwt.verify(token,process.env.ACCESS_TOKEN,(err,decoded)=>{
   if(err){
     return res.status(401).send({message:'forbidden access'})
   }
-  res.decoded=decoded
+  req.decoded=decoded
+  next()
 })
 
 }
 
-// jwt
-app.post('/jwt',async(req,res)=>{
-  const user = req.body;
-  const token= jwt.sign(user,process.env.ACCESS_TOKEN,{expiresIn: '1h'})
-  res.send({token})
-})
 
 // admin api
 
@@ -82,12 +82,12 @@ app.post('/users',async(req,res)=>{
 
 })
 // Users Get
-app.get('/users',async(req,res)=>{
+app.get('/users',verifyToken, async(req,res)=>{
   const result = await userCollection.find().toArray()
   res.send(result)
 })
 // Users delete
-app.delete('/users/:id', async(req,res)=>{
+app.delete('/users/:id',verifyToken, async(req,res)=>{
   const id = req.params.id;
   const query= {_id : new ObjectId(id)}
   const result = await userCollection.deleteOne(query)
