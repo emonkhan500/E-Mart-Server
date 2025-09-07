@@ -29,12 +29,13 @@ const userCollection = client.db('eMart').collection('user')
 // jwt
 app.post('/jwt',async(req,res)=>{
   const user = req.body;
-  const token= jwt.sign(user,process.env.ACCESS_TOKEN,{expiresIn: '1h'})
+  const token= jwt.sign(user,process.env.ACCESS_TOKEN,{expiresIn: '1h'});
   res.send({token})
 })
 
 // verify Token
 const verifyToken = (req, res, next)=>{
+  console.log('inside verifyToken', req.headers.authorization);
 if(!req.headers.authorization){
   return res.status(401).send({message:'forbidden access'})
  
@@ -65,6 +66,11 @@ app.patch('/users/admin/:id', async(req,res)=>{
   const result =await userCollection.updateOne(filter,updateDoc)
   res.send(result)
 
+})
+// admin Check
+
+app.get('/users/admin/:email',(req,res)=>{
+  
 })
 
 
