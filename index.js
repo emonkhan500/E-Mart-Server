@@ -108,29 +108,35 @@ async function run() {
       res.send(result);
     });
     // Users delete
-    app.delete("/users/:id", verifyToken, async (req, res) => {
+    app.delete("/users/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await userCollection.deleteOne(query);
       res.send(result);
     });
 
-
     // product api
-    app.post("/product", async (req, res) => {
+
+    app.post("/product", verifyToken, async (req, res) => {
       const product = req.body;
       const result = await productCollection.insertOne(product);
       res.send(result);
     });
-    
-    app.get('/product',verifyToken, async(req,res)=>{
-      const result =await productCollection.find().toArray()
-      res.send(result)
-    })
 
+    app.get("/product", verifyToken, async (req, res) => {
+      const result = await productCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.delete("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.deleteOne(query)
+      res.send(result)
+    });
 
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
     console.log(
