@@ -25,6 +25,7 @@ async function run() {
   try {
     const userCollection = client.db("eMart").collection("user");
     const productCollection = client.db("eMart").collection("product");
+    const wishCollection = client.db("eMart").collection("wishlist");
 
     // jwt
     app.post("/jwt", async (req, res) => {
@@ -131,17 +132,24 @@ async function run() {
     app.delete("/product/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await productCollection.deleteOne(query)
-      res.send(result)
+      const result = await productCollection.deleteOne(query);
+      res.send(result);
     });
 
+    app.get("/product/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await productCollection.findOne(query);
+      res.send(result);
+    });
 
-    app.get('/product/:id',async(req,res)=>{
-      const id= req.params.id;
-      const query = {_id :new ObjectId(id)}
-      const result = await productCollection.findOne(query)
-      res.send(result)
-    })
+    // wishlist
+
+    app.post("/wishlist",verifyToken, async (req, res) => {
+      const wishProduct = req.body
+      const result =await wishCollection.insertOne(wishProduct);
+      res.send(result) 
+    });
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
