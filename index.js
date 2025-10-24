@@ -5,7 +5,15 @@ const app = express();
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://e-mart-724d0.web.app",
+    ],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -145,20 +153,19 @@ async function run() {
 
     // wishlist
 
-    app.post("/wishlist",verifyToken, async (req, res) => {
-      const wishProduct = req.body
-      const result =await wishCollection.insertOne(wishProduct);
-      res.send(result) 
+    app.post("/wishlist", verifyToken, async (req, res) => {
+      const wishProduct = req.body;
+      const result = await wishCollection.insertOne(wishProduct);
+      res.send(result);
     });
 
-    app.get('/wishlist/:userEmail',verifyToken,async(req,res)=>{
-    const email = req.params.userEmail;
-    const query = { userEmail : email}
-    const result = await wishCollection.find(query).toArray()
-    res.send(result)
-    })
+    app.get("/wishlists/:userEmail", verifyToken, async (req, res) => {
+      const email = req.params.userEmail;
+      const query = { userEmail: email };
+      const result = await wishCollection.find(query).toArray();
+      res.send(result);
+    });
 
-    
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
