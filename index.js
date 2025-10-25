@@ -44,6 +44,8 @@ async function run() {
       res.send({ token });
     });
 
+    
+
     // verify Token
     const verifyToken = (req, res, next) => {
       // console.log("inside verifyToken", req.headers.authorization);
