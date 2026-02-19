@@ -7,12 +7,9 @@ const jwt = require("jsonwebtoken");
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://e-mart-724d0.web.app",
-    ],
+    origin: ["http://localhost:5173", "https://e-mart-724d0.web.app"],
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
@@ -44,8 +41,6 @@ async function run() {
       });
       res.send({ token });
     });
-
-    
 
     // verify Token
     const verifyToken = (req, res, next) => {
@@ -157,9 +152,26 @@ async function run() {
     // wishlist
 
     app.post("/wishlist", verifyToken, async (req, res) => {
-      const wishProduct = req.body;
-      const result = await wishCollection.insertOne(wishProduct);
-      res.send(result);
+      try {
+        const wishProduct = req.body;
+
+        const query = {
+          userEmail: wishProduct.userEmail,
+          productId: wishProduct.productId,
+        };
+
+        const alreadyExists = await wishCollection.findOne(query);
+
+        if (alreadyExists) {
+          return res.status(409).send({ message: "Already added to wishlist" });
+        }
+
+        const result = await wishCollection.insertOne(wishProduct);
+        res.send(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
     });
 
     app.get("/wishlists/:userEmail", verifyToken, async (req, res) => {
@@ -169,13 +181,29 @@ async function run() {
       res.send(result);
     });
 
-
-
-    // cart
+    // cartlist
     app.post("/cart", verifyToken, async (req, res) => {
-      const cartProduct = req.body;
-      const result = await cartCollection.insertOne(cartProduct);
-      res.send(result);
+      try {
+        const cartProduct = req.body;
+
+        const query = {
+          userEmail: cartProduct.userEmail,
+          productId: cartProduct.productId,
+        };
+
+        const alreadyExists = await cartCollection.findOne(query);
+
+        if (alreadyExists) {
+          return res.status(409).send({ message: "Already added to cart" });
+        }
+
+        const result = await cartCollection.insertOne(cartProduct);
+
+        res.status(201).send(result);
+      } catch (error) {
+        console.error("Cart Insert Error:", error);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
     });
 
     app.get("/carts/:userEmail", verifyToken, async (req, res) => {
