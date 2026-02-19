@@ -181,6 +181,13 @@ async function run() {
       res.send(result);
     });
 
+    app.delete("/wishlist/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await wishCollection.deleteOne(query);
+      res.send(result);
+    });    
+
     // cartlist
     app.post("/cart", verifyToken, async (req, res) => {
       try {
@@ -210,6 +217,12 @@ async function run() {
       const email = req.params.userEmail;
       const query = { userEmail: email };
       const result = await cartCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.delete("/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await cartCollection.deleteOne(query);
       res.send(result);
     });
 
