@@ -34,12 +34,13 @@ async function run() {
     const userCollection = client.db("eMart").collection("user");
     const productCollection = client.db("eMart").collection("product");
     const wishCollection = client.db("eMart").collection("wishlist");
+    const cartCollection = client.db("eMart").collection("cartlist");
 
     // jwt
     app.post("/jwt", async (req, res) => {
       const user = req.body;
       const token = jwt.sign(user, process.env.ACCESS_TOKEN, {
-        expiresIn: "1h",
+        expiresIn: "24h",
       });
       res.send({ token });
     });
@@ -134,7 +135,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/product", verifyToken, async (req, res) => {
+    app.get("/product", async (req, res) => {
       const result = await productCollection.find().toArray();
       res.send(result);
     });
@@ -165,6 +166,22 @@ async function run() {
       const email = req.params.userEmail;
       const query = { userEmail: email };
       const result = await wishCollection.find(query).toArray();
+      res.send(result);
+    });
+
+
+
+    // cart
+    app.post("/cart", verifyToken, async (req, res) => {
+      const cartProduct = req.body;
+      const result = await cartCollection.insertOne(cartProduct);
+      res.send(result);
+    });
+
+    app.get("/carts/:userEmail", verifyToken, async (req, res) => {
+      const email = req.params.userEmail;
+      const query = { userEmail: email };
+      const result = await cartCollection.find(query).toArray();
       res.send(result);
     });
 
