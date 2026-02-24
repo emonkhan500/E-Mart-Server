@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
-
-const wishlistController = require("../controllers/wishlistController");
 const verifyToken = require("../middlewares/verifyToken");
+const wishlistController = require("../controllers/wishlistController");
 
-router.post("/", verifyToken, wishlistController.addToWishlist);
-
+router.post("/", verifyToken, wishlistController.addWishlist);
 router.get("/:userEmail", verifyToken, wishlistController.getWishlist);
-
-router.delete("/:id", verifyToken, wishlistController.deleteWishlistItem);
+router.delete("/:id", wishlistController.deleteWishlist);
 
 module.exports = router;
