@@ -1,49 +1,42 @@
 const connectDB = require("../config/db");
 const { ObjectId } = require("mongodb");
 
-exports.addToWishlist = async (req, res) => {
-  try {
-    const db = await connectDB();
-    const wishCollection = db.collection("wishlist");
+exports.addWishlist = async (req, res) => {
+  const db = await connectDB();
+  const wishCollection = db.collection("wishlist");
 
-    const wishProduct = req.body;
+  const wishProduct = req.body;
 
-    const query = {
-      userEmail: wishProduct.userEmail,
-      productId: wishProduct.productId,
-    };
+  const alreadyExists = await wishCollection.findOne({
+    userEmail: wishProduct.userEmail,
+    productId: wishProduct.productId,
+  });
 
-    const alreadyExists = await wishCollection.findOne(query);
-
-    if (alreadyExists) {
-      return res.status(409).send({ message: "Already in wishlist" });
-    }
-
-    const result = await wishCollection.insertOne(wishProduct);
-    res.status(201).send(result);
-  } catch (error) {
-    res.status(500).send({ message: "Wishlist insert failed" });
+  if (alreadyExists) {
+    return res.status(409).send({ message: "Already added to wishlist" });
   }
+
+  const result = await wishCollection.insertOne(wishProduct);
+  res.send(result);
 };
 
 exports.getWishlist = async (req, res) => {
   const db = await connectDB();
-  const wishCollection = db.collection("wishlist");
-
-  const result = await wishCollection
+  const result = await db
+    .collection("wishlist")
     .find({ userEmail: req.params.userEmail })
     .toArray();
 
   res.send(result);
 };
 
-exports.deleteWishlistItem = async (req, res) => {
+exports.deleteWishlist = async (req, res) => {
   const db = await connectDB();
-  const wishCollection = db.collection("wishlist");
+  const id = req.params.id;
 
-  const result = await wishCollection.deleteOne({
-    _id: new ObjectId(req.params.id),
-  });
+  const result = await db
+    .collection("wishlist")
+    .deleteOne({ _id: new ObjectId(id) });
 
   res.send(result);
 };

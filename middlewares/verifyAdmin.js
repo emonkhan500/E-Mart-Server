@@ -6,7 +6,6 @@ const verifyAdmin = async (req, res, next) => {
     const userCollection = db.collection("user");
 
     const email = req.decoded.email;
-
     const user = await userCollection.findOne({ email });
 
     if (!user || user.role !== "admin") {
