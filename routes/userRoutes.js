@@ -18,7 +18,8 @@ router.delete("/:id", verifyToken, verifyAdmin, userController.deleteUser);
 router.patch("/admin/:id", verifyToken, verifyAdmin, userController.makeAdmin);
 
 // Check admin status
-// 🔹 changed to JWT-only route (no :email param)
 router.get("/admin", verifyToken, userController.checkAdmin);
+// role check
+router.get("/role/:email", userController.getUserRole);
 
 module.exports = router;
