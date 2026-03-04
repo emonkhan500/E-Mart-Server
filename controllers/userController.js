@@ -63,3 +63,20 @@ exports.checkAdmin = async (req, res) => {
 
   res.send({ admin: user?.role === "admin" });
 };
+exports.getUserRole = async (req, res) => {
+  try {
+    const db = await connectDB();
+    const email = req.params.email;
+
+    const user = await db.collection("user").findOne({ email });
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    res.send({ role: user.role || "user" });
+  } catch (error) {
+    console.error("Get role error:", error);
+    res.status(500).send({ message: "Internal server error" });
+  }
+};
