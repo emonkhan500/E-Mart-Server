@@ -30,3 +30,17 @@ exports.deleteProduct = async (req, res) => {
     .deleteOne({ _id: new ObjectId(id) });
   res.send(result);
 };
+exports.updateProduct = async (req, res) => {
+  const db = await connectDB();
+  const id = req.params.id;
+
+  const updatedData = {
+    $set: req.body,
+  };
+
+  const result = await db
+    .collection("product")
+    .updateOne({ _id: new ObjectId(id) }, updatedData);
+
+  res.send(result);
+};
