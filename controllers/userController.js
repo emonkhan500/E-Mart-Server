@@ -54,7 +54,7 @@ exports.makeAdmin = async (req, res) => {
   res.send(result);
 };
 
-// 🔹 fixed: get email from JWT, not param
+
 exports.checkAdmin = async (req, res) => {
   const db = await connectDB();
   const email = req.decoded.email;
