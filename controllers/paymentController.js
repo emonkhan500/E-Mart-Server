@@ -3,7 +3,7 @@ import { paymentCollection } from "../config/db.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-// 🔥 Create Payment Intent
+//  Create Payment Intent
 export const createPaymentIntent = async (req, res) => {
   try {
     const { price } = req.body;
@@ -23,7 +23,7 @@ export const createPaymentIntent = async (req, res) => {
   }
 };
 
-// 🔥 Get Payments by Email
+//  Get Payments by Email
 export const getPaymentsByEmail = async (req, res) => {
   try {
     const query = { agentemail: req.params.email };
@@ -34,7 +34,7 @@ export const getPaymentsByEmail = async (req, res) => {
   }
 };
 
-// 🔥 Save Payment
+//  Save Payment
 export const savePayment = async (req, res) => {
   try {
     const payment = req.body;
