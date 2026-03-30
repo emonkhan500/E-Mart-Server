@@ -6,6 +6,7 @@ const productRoutes = require("./routes/productRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const categoryRoutes = require("./routes/categoryRoute");
+const paymentRoutes = require("./routes/paymentRoute");
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/product", productRoutes);
 app.use("/wishlist", wishlistRoutes);
 app.use("/cart", cartRoutes);
 app.use("/category", categoryRoutes);
+app.use("/payment", paymentRoutes);
 
 app.get("/", (req, res) => {
   res.send("E-Mart Server is Running");
