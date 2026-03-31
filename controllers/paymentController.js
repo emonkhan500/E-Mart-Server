@@ -1,10 +1,11 @@
-import Stripe from "stripe";
-import { paymentCollection } from "../config/db.js";
+const Stripe = require("stripe");
+const connectDB = require("../config/db");
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 //  Create Payment Intent
-export const createPaymentIntent = async (req, res) => {
+exports.createPaymentIntent = async (req, res) => {
   try {
     const { price } = req.body;
     const amount = parseInt(price * 100);
@@ -24,10 +25,12 @@ export const createPaymentIntent = async (req, res) => {
 };
 
 //  Get Payments by Email
-export const getPaymentsByEmail = async (req, res) => {
+exports.getPaymentsByEmail = async (req, res) => {
   try {
+    const db = await connectDB();
+    
     const query = { agentemail: req.params.email };
-    const result = await paymentCollection.find(query).toArray();
+    const result = await  db.collection("payment").find(query).toArray(); 
     res.send(result);
   } catch (error) {
     res.status(500).send({ error: error.message });
@@ -35,8 +38,10 @@ export const getPaymentsByEmail = async (req, res) => {
 };
 
 //  Save Payment
-export const savePayment = async (req, res) => {
+exports.savePayment = async (req, res) => {
   try {
+    const db = await connectDB();
+    const paymentCollection = db.collection("payment");
     const payment = req.body;
     const paymentResult = await paymentCollection.insertOne(payment);
 
